@@ -31,6 +31,7 @@ from v1.atomic_elements import molecules, organisms
 from v1.models.snippets import ReusableText
 from v1.util import ref
 from v1.util.util import validate_social_sharing_image
+from wagtail.wagtailcore.models import Orderable
 
 
 class CFGOVAuthoredPages(TaggedItemBase):
@@ -441,3 +442,44 @@ class Feedback(models.Model):
                  for heading in headings]
             )
         return csvfile.getvalue()
+
+class FormExplainerPage(CFGOVPage):
+    header = StreamField([
+        ('hero', molecules.Hero()),
+        ('text_introduction', molecules.TextIntroduction()),
+    ], blank=True)
+
+
+    content = StreamField([
+        ('explainer', organisms.Explainer()),
+        ('info_unit_group', organisms.InfoUnitGroup()),
+        ('well', organisms.Well()),
+        ('feedback', v1_blocks.Feedback()),
+    ], blank=True)
+
+
+
+    # General content tab
+    content_panels = CFGOVPage.content_panels + [
+        StreamFieldPanel('header'),
+        StreamFieldPanel('content'),
+    ]
+
+    # Tab handler interface
+    edit_handler = TabbedInterface([
+        ObjectList(content_panels, heading='General Content'),
+        ObjectList(CFGOVPage.sidefoot_panels, heading='Sidebar'),
+        ObjectList(CFGOVPage.settings_panels, heading='Configuration'),
+    ])
+
+    template = 'full-width/index.html'
+
+    objects = PageManager()
+
+    search_fields = CFGOVPage.search_fields + [
+        index.SearchField('header')
+    ]
+
+
+
+

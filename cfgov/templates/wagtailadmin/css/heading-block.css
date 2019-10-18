@@ -40,3 +40,8 @@
        override default styling without needing an excessively long selector. */
     display: none !important;
 }
+
+.coordinates li {
+    width: 25% !important;
+    float: left;
+}

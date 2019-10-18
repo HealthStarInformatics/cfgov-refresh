@@ -4,7 +4,7 @@ from django.conf import settings
 from v1.models.base import (
     BaseCFGOVPageManager, CFGOVAuthoredPages, CFGOVPage, CFGOVPageCategory,
     CFGOVPageManager, CFGOVTaggedPages, FailedLoginAttempt, Feedback,
-    PasswordHistoryItem, TemporaryLockout
+    PasswordHistoryItem, TemporaryLockout, FormExplainerPage
 )
 from v1.models.blog_page import BlogPage, LegacyBlogPage
 from v1.models.browse_filterable_page import (

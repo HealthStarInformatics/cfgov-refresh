@@ -63,3 +63,8 @@ table[id$=sortable-input] .sortable-type-input {
     border-radius: 0;
     color: #101820;
 }
+
+.coordinates li {
+    width: 25% !important;
+    float: left;
+}
