@@ -64,8 +64,6 @@ class FormExplainer {
    * @param {HTMLNodes} elements - Current page DOM elements.
    */
   initializeUI( elements ) {
-    this.updatePageUI( elements.initialTab, EXPLAIN_TYPES.CHECKLIST );
-
     if ( this.pageCount === 1 ) {
       DT.hide( '.form-explainer_page-buttons' );
     }
@@ -78,6 +76,9 @@ class FormExplainer {
         this.setExplainerPlaceholders( _index );
       }
     );
+
+    this.updatePageUI( elements.initialTab, EXPLAIN_TYPES.CHECKLIST );
+
 
     // eslint-disable-next-line global-require
     require( 'cf-expandables/src/Expandable' ).init();
@@ -532,7 +533,7 @@ class FormExplainer {
       const category = EXPLAIN_TYPES[key];
       if ( !this.explainerHasContent( page, category ) ) {
         placeholder = this.generatePlaceholderHtml( category, this.pageName );
-        page.querySelector( '.explain_terms ' ).appendChild( placeholder );
+        page.querySelector( '.explain_terms' ).appendChild( placeholder );
       }
     } );
   }
@@ -545,14 +546,10 @@ class FormExplainer {
    */
   generatePlaceholderHtml( explainerType, pageName ) {
     const HTML =
-      '<div class="o-expandable o-expandable__padded' +
-      ' o-expandable__form-explainer ' +
-      'o-expandable__form-explainer-' + explainerType + ' ' +
-      'o-expandable__form-explainer-placeholder">' +
-      '<span class="o-expandable_header">' +
-      'Click on ' +
-      '"Get Definitions" above or page ahead to continue checking your ' +
-      pageName + '.</span></div>';
+      '<div class="o-expandable__form-explainer o-expandable__form-explainer-' + 
+      explainerType + ' o-expandable__form-explainer-placeholder">' +
+      'Click on tab above or page ahead to continue checking your ' + 
+      pageName + '</div>';
 
     return DT.createElement( HTML );
   }

@@ -15,18 +15,23 @@
 
    ========================================================================== #}
 
-{% macro render_map_points( terms, page_num ) %}
+{% macro render_map_points( terms, page_num, image_height, image_width ) %}
 {% for item in terms %}
-{% set id = 'page-' + page_num | string + '-' + 'note-'  + loop.index | string %}
-<a class="image-map_overlay image-map_overlay__{{ item.category }}"
-   style="{{ 'top:' + item.coordinates.top | string + '%;' 'left:' + item.coordinates.left | string + '%;' }}
-          {{ 'width:' + item.coordinates.width | string + '%;' 'height:' + item.coordinates.height | string + '%;'
-          if item.coordinates.width and item.coordinates.height }}"
-   href="{{ '#' + id }}"
-   id="{{ 'image-map_overlay__' + id }}"
-   tabindex="-1">
-    <span class="u-visually-hidden">{{ item.heading }}</span>
- </a>
+  {% set id = 'page-' + page_num | string + '-' + 'note-'  + loop.index | string %}
+  {% set top = ( item.coordinates.top | float / image_height ) * 100 %}
+  {% set left = ( item.coordinates.left | float / image_width ) * 100 %}
+  {% set width = ( item.coordinates.width | float / image_width ) * 100 %}
+  {% set height = ( item.coordinates.height | float / image_height ) * 100 %}
+
+  <a class="image-map_overlay image-map_overlay__{{ item.category }}"
+     style="{{ 'top:' + top | string + '%;' 'left:' + left | string + '%;' }}
+            {{ 'width:' + width | string + '%;' 'height:' + height | string + '%;'
+            if item.coordinates.width and item.coordinates.height }}"
+     href="{{ '#' + id }}"
+     id="{{ 'image-map_overlay__' + id }}"
+     tabindex="-1">
+      <span class="u-visually-hidden">{{ item.heading }}</span>
+   </a>
 {% endfor %}
 {% endmacro %}
 
@@ -191,13 +196,12 @@
                     </button>
                   </div>
                   {% set media = image(page.image, 'original') %}
-                  
+                  {% set image_height = media.height | float %}
+                  {% set image_width = media.width | float %}
                 <img class="image-map_image"
                      src="{{ media.url }}"
                      alt="">
-
-
-                {{ render_map_points( page.notes, loop.index ) }}
+                {{ render_map_points( page.notes, loop.index, image_height, image_width ) }}
             </div>
         </div>
         <figcaption class="terms explain_terms">
