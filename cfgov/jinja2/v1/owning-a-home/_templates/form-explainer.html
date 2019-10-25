@@ -38,14 +38,16 @@
             </button>
         </li>
     </ul>
+    {{ render_pagination( data ) }}
     {% for page in data %}
     <figure class="explain_page "
             id="explain_page-{{ loop.index }}"
             role="tablist"
             aria-multiselectable="true"
-            style="display:flex">
+            >
+          <div style="display:flex;">
           <div class="image-map explain_image-map" >
-              <div class="image-map_wrapper" style="position: sticky; top:10px; ">
+              <div class="image-map_wrapper" style="position: sticky; top:0; ">
                   <div class="form-explainer_page-buttons">
                       <button class="prev a-btn a-btn__disabled">
                           <span class="u-visually-hidden">Previous page</span>
@@ -70,6 +72,7 @@
                 {{ render_terms( page.terms, loop.index ) }}
             </div>
         </figcaption>
+      </div>
     </figure>
     {% endfor %}
 </div>

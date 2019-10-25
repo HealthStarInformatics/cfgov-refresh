@@ -73,7 +73,6 @@ class FormExplainer {
       ( value, index ) => {
         const _index = index + 1;
         this.updateImageUI( _index, true );
-        this.setExplainerPlaceholders( _index );
       }
     );
 
@@ -161,17 +160,7 @@ class FormExplainer {
     DT.addClass( currentTab, 'active-tab' );
   }
 
-  /**
-   * Update the image position, with possible delay.
-   * @param {number} delay - Time delay before updating the image position.
-   */
-  // updateImagePositionAfterAnimation( delay = 0 ) {
-  //   setTimeout( () => {
-  //     if ( window.innerWidth > 600 ) {
-  //       DT.nextFrame( this.updateStickiness.bind( this ) );
-  //     }
-  //   }, delay );
-  // }
+ 
 
   /* Update attention classes based on the expandable or image overlay
    that was targeted.
@@ -392,7 +381,6 @@ class FormExplainer {
     // // set width values on image elements
     // this.setImageElementWidths( elements );
 
-    // this.updateStickiness();
 
     // show the first page
     if ( pageNum > 1 ) {
@@ -405,27 +393,7 @@ class FormExplainer {
    * current page, so that the sticky element does not overlap
    * content that comes after current page.
    */
-  updateStickiness( ) {
-    // const imageMapWrapper = this.elements.imageMapWrapper;
-    // const page = this.elements.currentPage;
-    // const pageBottom = window.pageYOffset +
-    //                    page.getBoundingClientRect().bottom -
-    //                    imageMapWrapper.offsetHeight;
-    // const yPos = imageMapWrapper.parentNode.getBoundingClientRect().top;
-
-    // if ( yPos < 30 ) {
-    //   if ( window.pageYOffset >= pageBottom ) {
-    //     DT.removeClass( imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
-    //     DT.addClass( imageMapWrapper, CSS.EXPLAIN_PAGE_ABSOLUTE );
-    //   } else {
-    //     DT.removeClass( imageMapWrapper, CSS.EXPLAIN_PAGE_ABSOLUTE );
-    //     DT.addClass( imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
-    //   }
-    // } else {
-    //   DT.removeClass( imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
-    //   DT.removeClass( imageMapWrapper, CSS.EXPLAIN_PAGE_ABSOLUTE );
-    // }
-  }
+  
 
   /**
    * Paginate through the various form pages.
@@ -501,51 +469,7 @@ class FormExplainer {
   }
 
 
-  /**
-   * Set explainer placeholders.
-   * @param {string} id - ID of the current page.
-   */
-  setExplainerPlaceholders( id ) {
-    const page = this.getPageEl( id );
-    let placeholder;
-    Object.keys( EXPLAIN_TYPES ).forEach( key => {
-      const category = EXPLAIN_TYPES[key];
-      if ( !this.explainerHasContent( page, category ) ) {
-        placeholder = this.generatePlaceholderHtml( category, this.pageName );
-        page.querySelector( '.explain_terms' ).appendChild( placeholder );
-      }
-    } );
-  }
-
-  /**
-   * Generate explainer placeholder HTML.
-   * @param {string} explainerType - Type of form explainer.
-   * @param {string} pageName - Name of the page.
-   * @returns {HTMLNode} Placeholder DOM node.
-   */
-  generatePlaceholderHtml( explainerType, pageName ) {
-    const HTML =
-      '<div class="o-expandable__form-explainer o-expandable__form-explainer-' + 
-      explainerType + ' o-expandable__form-explainer-placeholder">' +
-      // 'Click on tab above or page ahead to continue checking your ' + 
-      // pageName 
-      'Placeholder no results text</div>';
-
-    return DT.createElement( HTML );
-  }
-
-  /**
-   * Determine if the explainer has content.
-   * @param {HTMLNode} page - Current page element.
-   * @param {string} explainerType - Type form explainer.
-   * @returns {boolean} Whether the explainer has content.
-   */
-  explainerHasContent( page, explainerType ) {
-    return page.querySelector(
-      '.o-expandable__form-explainer-' + explainerType
-    ) !== null;
-  }
-
+  
 
   // NOTE: DO we need to do this?
   /**

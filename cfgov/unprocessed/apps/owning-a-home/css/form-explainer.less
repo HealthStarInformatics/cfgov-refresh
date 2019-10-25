@@ -188,7 +188,16 @@
         margin: 0 auto unit( 60px / @base-font-size-px, em );
 
         .respond-to-min( 600px, {
-            
+            .grid_nested-col-group();
+            &_tabs {
+                .grid_column(12);
+            }
+
+      
+
+            &_pagination {
+                .grid_column(12);
+            }
         } );
     }
 
@@ -239,15 +248,6 @@
             position: relative;
         } );
 
-        &__fixed {
-            position: fixed;
-            top: 30px;
-        }
-
-        &__absolute {
-            position: absolute;
-            bottom: 30px;
-        }
     }
 
     .explain_pagination {
