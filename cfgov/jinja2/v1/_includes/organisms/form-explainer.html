@@ -182,8 +182,10 @@
     <figure class="explain_page"
             id="explain_page-{{ loop.index }}"
             role="tablist"
-            aria-multiselectable="true">
-        <div class="image-map explain_image-map">
+            aria-multiselectable="true"
+            style="display:table;">
+        <div style="display:table-cell">
+        <div class="image-map explain_image-map" style="position: sticky; top:0">
             <div class="image-map_wrapper">
                 <div class="form-explainer_page-buttons">
                     <button class="prev a-btn a-btn__disabled">
@@ -204,7 +206,8 @@
                 {{ render_map_points( page.notes, loop.index, image_height, image_width ) }}
             </div>
         </div>
-        <figcaption class="terms explain_terms">
+      </div>
+        <figcaption class="terms explain_terms" style="display:table-cell">
             <div class="o-expandable-group
                         o-expandable-group__form-explainer
                         {{ 'o-expandable-group__accordion' if true else '' }}">

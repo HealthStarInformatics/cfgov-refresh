@@ -44,9 +44,7 @@
         <div class="content_main">
 
             {% include "_templates/no_js.html" %}
-
-            <div class="form-explainer">
-                <div class="page-intro content-l">
+            <div class="page-intro content-l">
                     <div class="content-l_col-2-3">
                         <h1>Loan Estimate Explainer</h1>
                         <p class="lead">A Loan Estimate tells you important details about a mortgage loan you have requested. Use this tool to review your Loan Estimate to make sure it reflects what you discussed with the lender. If something looks different from what you expected, ask why. Request multiple Loan Estimates from different lenders so you can compare and choose the loan that's right for you.</p>
@@ -71,6 +69,8 @@
                             class="illustration">
                     </div>
                 </div>
+            <div class="form-explainer">
+                
                 {# Import the form explainer macros #}
                 {% import "_templates/form-explainer.html" as form_explainer %}
                 {# Import the data to use with form explainer #}
@@ -78,9 +78,7 @@
                 {% from "loan-estimate-2-data.html" import data as page_2 %}
                 {% from "loan-estimate-3-data.html" import data as page_3 %}
                 {# Render form explainer with the data for this form #}
-                <div class="col-12">
                     {{ form_explainer.render([ page_1, page_2, page_3 ]) }}
-                </div>
                 <div class="col-12">
                     {% include "_templates/ratings-form.html" %}
                 </div>

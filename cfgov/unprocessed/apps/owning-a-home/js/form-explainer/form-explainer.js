@@ -13,8 +13,8 @@ const EXPLAIN_TYPES = {
 };
 
 const CSS = {
-  EXPLAIN_PAGE_FIXED:    'explain_page__fixed',
-  EXPLAIN_PAGE_ABSOLUTE: 'explain_page__absolute',
+  // EXPLAIN_PAGE_FIXED:    'explain_page__fixed',
+  // EXPLAIN_PAGE_ABSOLUTE: 'explain_page__absolute',
   HAS_ATTENTION:         'has-attention',
   HOVER_HAS_ATTENTION:   'hover-has-attention'
 };
@@ -79,7 +79,8 @@ class FormExplainer {
 
     this.updatePageUI( elements.initialTab, EXPLAIN_TYPES.CHECKLIST );
 
-
+    // NOTE: do we have to assume expandables? 
+    // CAN WE dispatch an event instead?
     // eslint-disable-next-line global-require
     require( 'cf-expandables/src/Expandable' ).init();
   }
@@ -98,17 +99,18 @@ class FormExplainer {
          we only pass in the pageNum on pageLoad, when
          pages after the first will be hidden once they're
          fully loaded & we've calculated their widths */
-      this.fitAndStickToWindow( elements, isPageLoad ? pageNum : null );
+      this.fitToWindow( elements, isPageLoad ? pageNum : null );
     } else if ( !isPageLoad ) {
-
+      // NOTE: what's all this about?
+      // Can we break this out into resize & page load
       /* if this is called on screen resize instead of page load,
          remove width values & call unstick on the imageWrapper */
       elements.imageMapWrapper.style.width = '';
-      DT.removeClass( elements.imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
+      // DT.removeClass( elements.imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
       elements.imageMap.style.width = '';
       elements.imageMapImage.style.width = '';
       DT.applyAll( elements.terms, element => ( element.style.width = '' ) );
-      DT.removeClass( elements.imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
+      // DT.removeClass( elements.imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
     } else if ( pageNum > 1 ) {
 
       // on page load, hide pages except first
@@ -163,13 +165,13 @@ class FormExplainer {
    * Update the image position, with possible delay.
    * @param {number} delay - Time delay before updating the image position.
    */
-  updateImagePositionAfterAnimation( delay = 0 ) {
-    setTimeout( () => {
-      if ( window.innerWidth > 600 ) {
-        DT.nextFrame( this.updateStickiness.bind( this ) );
-      }
-    }, delay );
-  }
+  // updateImagePositionAfterAnimation( delay = 0 ) {
+  //   setTimeout( () => {
+  //     if ( window.innerWidth > 600 ) {
+  //       DT.nextFrame( this.updateStickiness.bind( this ) );
+  //     }
+  //   }, delay );
+  // }
 
   /* Update attention classes based on the expandable or image overlay
    that was targeted.
@@ -379,17 +381,18 @@ class FormExplainer {
    * @param {HTMLNodes} elements - Current page DOM elements.
    * @param {number} pageNum - Current page number.
   */
-  fitAndStickToWindow( elements, pageNum ) {
-    if ( pageNum ) {
-      this.storeImageDimensions( elements.imageMapImage );
-    }
+  fitToWindow( elements, pageNum ) {
+    // if ( pageNum ) {
+    //   // NOTE: Should we add these as data attributes to the image in the template?
+    //   this.storeImageDimensions( elements.imageMapImage );
+    // }
 
-    this.resizeImage( elements, !pageNum );
+    // this.resizeImage( elements, !pageNum );
 
-    // set width values on image elements
-    this.setImageElementWidths( elements );
+    // // set width values on image elements
+    // this.setImageElementWidths( elements );
 
-    this.updateStickiness();
+    // this.updateStickiness();
 
     // show the first page
     if ( pageNum > 1 ) {
@@ -403,25 +406,25 @@ class FormExplainer {
    * content that comes after current page.
    */
   updateStickiness( ) {
-    const imageMapWrapper = this.elements.imageMapWrapper;
-    const page = this.elements.currentPage;
-    const pageBottom = window.pageYOffset +
-                       page.getBoundingClientRect().bottom -
-                       imageMapWrapper.offsetHeight;
-    const yPos = imageMapWrapper.parentNode.getBoundingClientRect().top;
+    // const imageMapWrapper = this.elements.imageMapWrapper;
+    // const page = this.elements.currentPage;
+    // const pageBottom = window.pageYOffset +
+    //                    page.getBoundingClientRect().bottom -
+    //                    imageMapWrapper.offsetHeight;
+    // const yPos = imageMapWrapper.parentNode.getBoundingClientRect().top;
 
-    if ( yPos < 30 ) {
-      if ( window.pageYOffset >= pageBottom ) {
-        DT.removeClass( imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
-        DT.addClass( imageMapWrapper, CSS.EXPLAIN_PAGE_ABSOLUTE );
-      } else {
-        DT.removeClass( imageMapWrapper, CSS.EXPLAIN_PAGE_ABSOLUTE );
-        DT.addClass( imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
-      }
-    } else {
-      DT.removeClass( imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
-      DT.removeClass( imageMapWrapper, CSS.EXPLAIN_PAGE_ABSOLUTE );
-    }
+    // if ( yPos < 30 ) {
+    //   if ( window.pageYOffset >= pageBottom ) {
+    //     DT.removeClass( imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
+    //     DT.addClass( imageMapWrapper, CSS.EXPLAIN_PAGE_ABSOLUTE );
+    //   } else {
+    //     DT.removeClass( imageMapWrapper, CSS.EXPLAIN_PAGE_ABSOLUTE );
+    //     DT.addClass( imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
+    //   }
+    // } else {
+    //   DT.removeClass( imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
+    //   DT.removeClass( imageMapWrapper, CSS.EXPLAIN_PAGE_ABSOLUTE );
+    // }
   }
 
   /**
@@ -497,30 +500,6 @@ class FormExplainer {
     } );
   }
 
-  /**
-   * Unset the image position by removing the appropriate classes.
-   */
-  unStickImage() {
-    const element = this.getPageEl( this.currentPage );
-
-    DT.removeClass( element, CSS.EXPLAIN_PAGE_FIXED );
-    DT.removeClass( element, CSS.EXPLAIN_PAGE_ABSOLUTE );
-  }
-
-  /**
-   * Add the scroll event listener and set the image position.
-   */
-  stickImage() {
-    window.removeEventListener( 'scroll', this.onScroll );
-    if ( window.innerWidth > 600 ) {
-      this.onScroll = throttle( () => {
-        this.updateStickiness();
-      }, 100 );
-      window.addEventListener( 'scroll', this.onScroll );
-    } else {
-      this.unStickImage();
-    }
-  }
 
   /**
    * Set explainer placeholders.
@@ -548,8 +527,9 @@ class FormExplainer {
     const HTML =
       '<div class="o-expandable__form-explainer o-expandable__form-explainer-' + 
       explainerType + ' o-expandable__form-explainer-placeholder">' +
-      'Click on tab above or page ahead to continue checking your ' + 
-      pageName + '</div>';
+      // 'Click on tab above or page ahead to continue checking your ' + 
+      // pageName 
+      'Placeholder no results text</div>';
 
     return DT.createElement( HTML );
   }
@@ -566,6 +546,8 @@ class FormExplainer {
     ) !== null;
   }
 
+
+  // NOTE: DO we need to do this?
   /**
    * Set the tab index to 0 for all form explainer links.
    */
@@ -585,13 +567,10 @@ class FormExplainer {
     const uiElements = this.elements;
     const delay = 700;
 
-    this.stickImage();
-
     window.addEventListener(
       'resize',
       throttle( () => {
         this.updateImageUI( this.currentPage );
-        this.stickImage();
       }, 250 )
     );
 
@@ -629,7 +608,7 @@ class FormExplainer {
       const explainerType = selectedTab.querySelector( '[data-target]' )
         .getAttribute( 'data-target' );
       this.updatePageUI( selectedTab, explainerType );
-
+      // NOTE: Do we need to scroll here?
       scrollTo(
         uiElements.tabList[0].getBoundingClientRect().top +
         window.pageYOffset,
@@ -698,7 +677,8 @@ class FormExplainer {
           );
 
           this.updateAttention( closestFormExplainer, CSS.HAS_ATTENTION );
-          this.updateImagePositionAfterAnimation( 600 );
+          // NOTE: Is this part necessary?
+          //this.updateImagePositionAfterAnimation( 600 );
         }
       }
     );

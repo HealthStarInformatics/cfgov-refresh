@@ -38,31 +38,32 @@
             </button>
         </li>
     </ul>
-    {{ render_pagination( data ) }}
     {% for page in data %}
-    <figure class="explain_page"
+    <figure class="explain_page "
             id="explain_page-{{ loop.index }}"
             role="tablist"
-            aria-multiselectable="true">
-        <div class="image-map explain_image-map">
-            <div class="image-map_wrapper">
-                <div class="form-explainer_page-buttons">
-                    <button class="prev a-btn a-btn__disabled">
-                        <span class="u-visually-hidden">Previous page</span>
-                        {{ svg_icon('left') }}
-                    </button>
-                    <button class="a-btn next">
-                        <span class="u-visually-hidden">Next page</span>
-                        {{ svg_icon('right') }}
-                    </button>
-                  </div>
-                <img class="image-map_image"
-                     src="{{ page.img }}"
-                     alt="">
-                {{ render_map_points( page.terms, loop.index ) }}
-            </div>
-        </div>
-        <figcaption class="terms explain_terms">
+            aria-multiselectable="true"
+            style="display:flex">
+          <div class="image-map explain_image-map" >
+              <div class="image-map_wrapper" style="position: sticky; top:10px; ">
+                  <div class="form-explainer_page-buttons">
+                      <button class="prev a-btn a-btn__disabled">
+                          <span class="u-visually-hidden">Previous page</span>
+                          {{ svg_icon('left') }}
+                      </button>
+                      <button class="a-btn next">
+                          <span class="u-visually-hidden">Next page</span>
+                          {{ svg_icon('right') }}
+                      </button>
+                    </div>
+                  <img class="image-map_image"
+                       src="{{ page.img }}"
+                       style="height:95vh"
+                       alt="">
+                  {{ render_map_points( page.terms, loop.index ) }}
+              </div>
+          </div>
+        <figcaption class="terms explain_terms" style="flex:1; padding-left:35px">
             <div class="o-expandable-group
                         o-expandable-group__form-explainer
                         {{ 'o-expandable-group__accordion' if true else '' }}">
@@ -181,6 +182,13 @@
     </button>
     <div class="o-expandable_content" tabindex="0">
         {{ item.definition | safe }}
+        <p>hi</p>
+        <p>hi</p>
+        <p>hi</p>
+        <p>hi</p>
+        <p>hi</p>
+        <p>hi</p>
+
         {% if item.highlight -%}
             <img src="{{ item.highlight }}" alt="">
         {%- endif %}
