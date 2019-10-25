@@ -5,7 +5,6 @@ import {
 import DT from './dom-tools';
 import { assign } from '../../../../js/modules/util/assign';
 import { closest } from '../../../../js/modules/util/dom-traverse';
-import throttle from 'lodash.throttle';
 
 const EXPLAIN_TYPES = {
   CHECKLIST:   'checklist',
@@ -41,7 +40,6 @@ class FormExplainer {
     this.elements = {};
     this.elements.base = element;
     this.pageName = 'form';
-    this.resized = false;
   }
 
   /**
@@ -52,7 +50,6 @@ class FormExplainer {
     this.setPageCount();
     this.setCurrentPage( this.currentPage, UNDEFINED, false );
     this.setUIElements();
-    this.setTabIndex();
     this.initializeUI( this.elements );
     this.initializeEvents();
 
@@ -372,34 +369,10 @@ class FormExplainer {
   }
 
 
-  
-
-  // NOTE: DO we need to do this?
-  /**
-   * Set the tab index to 0 for all form explainer links.
-   */
-  setTabIndex() {
-    const elements = DT.getEls(
-      '.o-expandable__form-explainer .o-expandable_content a'
-    );
-
-    DT.applyAll(
-      elements,
-      element => element.setAttribute( 'tabindex', 0 )
-    );
-  }
-
   /* Initialize the DOM events for the entire explainer UI. */
   initializeEvents() {
     const uiElements = this.elements;
     const delay = 700;
-
-    window.addEventListener(
-      'resize',
-      throttle( () => {
-        this.updateImageUI( this.currentPage );
-      }, 250 )
-    );
 
     /* When a paginantion link is clicked,
      * switch to the next / previous page.
