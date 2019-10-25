@@ -39,7 +39,6 @@ class FormExplainer {
     this.currentPage = options.currentPage || 1;
     this.elements = {};
     this.elements.base = element;
-    this.pageName = 'form';
   }
 
   /**
@@ -61,10 +60,6 @@ class FormExplainer {
    * @param {HTMLNodes} elements - Current page DOM elements.
    */
   initializeUI( elements ) {
-    if ( this.pageCount === 1 ) {
-      DT.hide( '.form-explainer_page-buttons' );
-    }
-
     DT.applyAll(
       elements.pages,
       ( value, index ) => {
@@ -101,11 +96,7 @@ class FormExplainer {
       // Can we break this out into resize & page load
       /* if this is called on screen resize instead of page load,
          remove width values & call unstick on the imageWrapper */
-      elements.imageMapWrapper.style.width = '';
-      // DT.removeClass( elements.imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
-      elements.imageMap.style.width = '';
-      elements.imageMapImage.style.width = '';
-      DT.applyAll( elements.terms, element => ( element.style.width = '' ) );
+      
       // DT.removeClass( elements.imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
     } else if ( pageNum > 1 ) {
 
@@ -287,12 +278,6 @@ class FormExplainer {
       DT.hide( elements.page );
     }
   }
-
-  /**
-   * Modify the image position if the viewport has been scrolled past
-   * current page, so that the sticky element does not overlap
-   * content that comes after current page.
-   */
   
 
   /**
@@ -477,8 +462,6 @@ class FormExplainer {
           );
 
           this.updateAttention( closestFormExplainer, CSS.HAS_ATTENTION );
-          // NOTE: Is this part necessary?
-          //this.updateImagePositionAfterAnimation( 600 );
         }
       }
     );

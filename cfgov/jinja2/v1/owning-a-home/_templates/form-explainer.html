@@ -38,7 +38,10 @@
             </button>
         </li>
     </ul>
-    {{ render_pagination( data ) }}
+    {% set page_count = data | length %}
+    {% if page_count > 1 %}
+      {{ render_pagination( data ) }}
+    {% endif %}
     {% for page in data %}
     <figure class="explain_page "
             id="explain_page-{{ loop.index }}"
@@ -48,6 +51,7 @@
           <div style="display:flex;">
           <div class="image-map explain_image-map" >
               <div class="image-map_wrapper" style="position: sticky; top:0; ">
+                {% if page_count > 1 %}
                   <div class="form-explainer_page-buttons">
                       <button class="prev a-btn a-btn__disabled">
                           <span class="u-visually-hidden">Previous page</span>
@@ -58,6 +62,7 @@
                           {{ svg_icon('right') }}
                       </button>
                     </div>
+                  {% endif %}
                   <img class="image-map_image"
                        src="{{ page.img }}"
                        style="height:95vh"
