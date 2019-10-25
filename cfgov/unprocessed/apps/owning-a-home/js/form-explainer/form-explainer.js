@@ -12,8 +12,6 @@ const EXPLAIN_TYPES = {
 };
 
 const CSS = {
-  // EXPLAIN_PAGE_FIXED:    'explain_page__fixed',
-  // EXPLAIN_PAGE_ABSOLUTE: 'explain_page__absolute',
   HAS_ATTENTION:         'has-attention',
   HOVER_HAS_ATTENTION:   'hover-has-attention'
 };
@@ -63,8 +61,12 @@ class FormExplainer {
     DT.applyAll(
       elements.pages,
       ( value, index ) => {
-        const _index = index + 1;
-        this.updateImageUI( _index, true );
+        const _index = index + 1;        
+        if ( _index > 1 ) {
+          // Hide pages other than first on page load
+          const elements = this.getPageElements( _index );
+          DT.hide( elements.page );
+        }
       }
     );
 
@@ -76,34 +78,6 @@ class FormExplainer {
     require( 'cf-expandables/src/Expandable' ).init();
   }
 
-  /**
-   * Update the image UI for the current page.
-   * @param {number} pageNum - Current page number.
-   * @param {boolean} isPageLoad - Whether this is the initial page load.
-   */
-  updateImageUI( pageNum, isPageLoad ) {
-    const elements = this.getPageElements( pageNum );
-
-    if ( window.innerWidth > 600 ) {
-
-      /* update widths & position on larger screens
-         we only pass in the pageNum on pageLoad, when
-         pages after the first will be hidden once they're
-         fully loaded & we've calculated their widths */
-      this.fitToWindow( elements, isPageLoad ? pageNum : null );
-    } else if ( !isPageLoad ) {
-      // NOTE: what's all this about?
-      // Can we break this out into resize & page load
-      /* if this is called on screen resize instead of page load,
-         remove width values & call unstick on the imageWrapper */
-      
-      // DT.removeClass( elements.imageMapWrapper, CSS.EXPLAIN_PAGE_FIXED );
-    } else if ( pageNum > 1 ) {
-
-      // on page load, hide pages except first
-      DT.hide( elements.page );
-    }
-  }
 
   /**
    * Update the pagination UI.
@@ -274,9 +248,7 @@ class FormExplainer {
   */
   fitToWindow( elements, pageNum ) {
     // show the first page
-    if ( pageNum > 1 ) {
-      DT.hide( elements.page );
-    }
+    
   }
   
 
@@ -333,7 +305,7 @@ class FormExplainer {
    */
   setPageCount( pageCount ) {
     const pages = DT.getEls( '.explain_page' );
-    this.pageCount = pageCount || pages.length;
+    this.pageCount = pages.length;
   }
 
   /**
