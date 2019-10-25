@@ -275,94 +275,8 @@ class FormExplainer {
   getPageEl( pageNum ) {
     return DT.getEl( `#explain_page-${ pageNum }` );
   }
+  
 
-  /**
-   * Calculate the new image width based on the height of the window.
-   * @param {number} imageWidth - Width of the image.
-   * @param {number} imageHeight - Height of the image.
-   * @param {number} windowHeight - Height of the window.
-   * @returns {Object} Page DOM element.
-   */
-  calculateNewImageWidth( imageWidth, imageHeight, windowHeight ) {
-    const imageMapImageRatio = ( imageWidth + 2 ) / ( imageHeight + 2 );
-
-    return ( ( windowHeight - 60 ) * imageMapImageRatio ) + 30;
-  }
-
-  /**
-   * Resize the image map and corresponding images, based on window size.
-   * @param {HTMLNodes} elements - Current page DOM elements.
-   * @param {boolean} windowResize - Whether the images are being resized
-   * based on a window resize event.
-   */
-  resizeImage( elements, windowResize ) {
-    const pageWidth = elements.page.clientWidth;
-    const imageMapImage = elements.imageMapImage;
-    const currentHeight = imageMapImage.clientHeight;
-    const currentWidth = imageMapImage.clientWidth;
-    const actualWidth = imageMapImage.getAttribute( 'data-actual-width' );
-    const actualHeight = imageMapImage.getAttribute( 'data-actual-height' );
-    const windowHeight = window.innerHeight - 60;
-    let newWidth;
-    let newWidthPercentage;
-
-    /* If the image is too tall for the window, resize it proportionally,
-       then update the adjacent terms column width to fit.
-       On window resize, also check if image is now too small & resize,
-       but only if we've stored the actual image dimensions for comparison. */
-    if ( ( currentHeight > windowHeight ) ||
-         ( windowResize && actualWidth && actualHeight ) ) {
-      // determine new width
-      newWidth = this.calculateNewImageWidth(
-        currentWidth, currentHeight, window.innerHeight
-      );
-
-      if ( actualWidth && newWidth > actualWidth ) {
-        newWidth = actualWidth;
-      }
-
-      // update element widths
-      newWidthPercentage = newWidth / pageWidth * 100;
-
-      /* on screen less than 800px wide, the terms need a minimum 33%
-         width or they become too narrow to read */
-      if ( window.innerWidth <= 800 && newWidthPercentage > 67 ) {
-
-        newWidthPercentage = 67;
-      }
-
-      elements.imageMap.style.width = newWidthPercentage + '%';
-
-      DT.applyAll(
-        elements.terms,
-        element => ( element.style.width = 100 - newWidthPercentage + '%' )
-      );
-    }
-  }
-
-  /**
-   * Set the image map and image map widths, in pixels.
-   * @param {HTMLNodes} elements - Current page DOM elements.
-   */
-  setImageElementWidths( elements ) {
-
-    /* When the image position is set to `fixed`,
-       it no longer constrained to its parent.
-       To fix this we will give it its own width that is equal to the parent.
-       (IE8 wants a width on the wrapper too) */
-    const containerWidth = elements.imageMap.clientWidth + 'px';
-    elements.imageMapImage.style.width = containerWidth;
-    elements.imageMapWrapper.style.width = containerWidth;
-  }
-
-  /**
-   * Store the image widths in data attributes.
-   * @param {Object} image - Current form explainer image map.
-   */
-  storeImageDimensions( image ) {
-    image.setAttribute( 'data-actual-width', image.clientWidth );
-    image.setAttribute( 'data-actual-height', image.clientHeight );
-  }
 
   /**
    * Limit .image-map_image to the height of the window and then adjust the two
@@ -371,17 +285,6 @@ class FormExplainer {
    * @param {number} pageNum - Current page number.
   */
   fitToWindow( elements, pageNum ) {
-    // if ( pageNum ) {
-    //   // NOTE: Should we add these as data attributes to the image in the template?
-    //   this.storeImageDimensions( elements.imageMapImage );
-    // }
-
-    // this.resizeImage( elements, !pageNum );
-
-    // // set width values on image elements
-    // this.setImageElementWidths( elements );
-
-
     // show the first page
     if ( pageNum > 1 ) {
       DT.hide( elements.page );
