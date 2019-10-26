@@ -54,6 +54,80 @@ class FormExplainer {
   }
 
   /**
+   * Paginate through the various form pages.
+   * @param {number} pageCount - Number of pages.
+   */
+  setPageCount( pageCount ) {
+    const pages = DT.getEls( '.explain_page' );
+    this.pageCount = pages.length;
+  }
+
+   /**
+   * Paginate through the various form pages.
+   * @param {number} pageNum - Number of the current page.
+   * @param {function} callback - Function to invode after scroll.
+   * @param {boolean} shouldScrollIntoView - Whether to scroll the page into view.
+   */
+  setCurrentPage( pageNum, callback, shouldScrollIntoView = true ) {
+    const CURRENT_PAGE = 'current-page';
+    const PAGE_LINK = '.form-explainer_page-link';
+    const PAGINATION = '.explain_pagination';
+    const CURRENT_PAGE_LINK =
+      '.form-explainer_page-link[data-page="' + pageNum + '"]';
+
+    this.currentPage = parseInt( pageNum, 10 );
+    this.elements.currentPage = this.getPageEl( pageNum );
+
+    DT.removeClass( PAGE_LINK, CURRENT_PAGE );
+    DT.addClass( CURRENT_PAGE_LINK, CURRENT_PAGE );
+    this.updatePaginationUI();
+
+    if ( shouldScrollIntoView ) {
+      scrollIntoView(
+        DT.getEl( PAGINATION ),
+        { duration: 200,
+          callback: callback || NO_OP
+        }
+      );
+    }
+  }
+
+  /**
+   * Set the UI elements for the page
+   * @returns {Object} DOM elements for the page.
+   */
+  setUIElements() {
+    const explain = DT.getEl( '.explain' );
+    const explainTabs = explain.querySelector( '.explain_tabs' );
+    const explainPagination = explain.querySelector( '.explain_pagination' );
+    const explainPageBtns = explain.querySelectorAll(
+      '.form-explainer_page-buttons button'
+    );
+    const tabLink = explain.querySelector(
+      '.tab-link[data-target="' + EXPLAIN_TYPES.CHECKLIST + '"]'
+    );
+    const initialTab = closest( tabLink, '.tab-list' );
+    const tabList = explain.querySelectorAll( '.explain_tabs .tab-list' );
+    const pages = explain.querySelectorAll( '.explain_page' );
+    const formExplainerLinks = explain.querySelectorAll(
+      '.form-explainer_page-link'
+    );
+
+    return assign( this.elements,
+      { explain,
+        explainPageBtns,
+        explainPagination,
+        explainTabs,
+        formExplainerLinks,
+        initialTab,
+        pages,
+        tabLink,
+        tabList
+      }
+    );
+  }
+
+  /**
    * Initialize the UI after instatiation.
    * @param {HTMLNodes} elements - Current page DOM elements.
    */
@@ -63,21 +137,28 @@ class FormExplainer {
       ( value, index ) => {
         const _index = index + 1;        
         if ( _index > 1 ) {
-          // Hide pages other than first on page load
-          const elements = this.getPageElements( _index );
-          DT.hide( elements.page );
+          // Hide all but the first parge
+          const _page = this.getPageEl( _index );
+          DT.hide( _page );
         }
       }
     );
 
     this.updatePageUI( elements.initialTab, EXPLAIN_TYPES.CHECKLIST );
 
-    // NOTE: do we have to assume expandables? 
-    // CAN WE dispatch an event instead?
+    // TODO: Can we dispatch an event and init the expandables outside this?
     // eslint-disable-next-line global-require
     require( 'cf-expandables/src/Expandable' ).init();
   }
 
+  /**
+   * Return explainer page element based on page number.
+   * @param {number} pageNum - Number of explainer page.
+   * @returns {Object} Page DOM element.
+   */
+  getPageEl( pageNum ) {
+    return DT.getEl( `#explain_page-${ pageNum }` );
+  }
 
   /**
    * Update the pagination UI.
@@ -121,8 +202,6 @@ class FormExplainer {
     DT.removeClass( '.explain_tabs .tab-list', 'active-tab' );
     DT.addClass( currentTab, 'active-tab' );
   }
-
- 
 
   /* Update attention classes based on the expandable or image overlay
    that was targeted.
@@ -178,81 +257,6 @@ class FormExplainer {
   }
 
   /**
-   * Return page elements based on the page number.
-   * @param {Object} pageNum - Current page number.
-   * @returns {Object} DOM elements for the page.
-   */
-  getPageElements( pageNum ) {
-    const element = this.getPageEl( pageNum );
-
-    return {
-      page: element,
-      imageMap: element.querySelector( '.image-map' ),
-      imageMapImage: element.querySelector( '.image-map_image' ),
-      imageMapWrapper: element.querySelector( '.image-map_wrapper' ),
-      terms: element.querySelectorAll( '.terms' )
-    };
-  }
-
-  /**
-   * Set the UI elements for the page
-   * @returns {Object} DOM elements for the page.
-   */
-  setUIElements() {
-    const explain = DT.getEl( '.explain' );
-    const explainTabs = explain.querySelector( '.explain_tabs' );
-    const explainPagination = explain.querySelector( '.explain_pagination' );
-    const explainPageBtns = explain.querySelectorAll(
-      '.form-explainer_page-buttons button'
-    );
-    const tabLink = explain.querySelector(
-      '.tab-link[data-target="' + EXPLAIN_TYPES.CHECKLIST + '"]'
-    );
-    const initialTab = closest( tabLink, '.tab-list' );
-    const tabList = explain.querySelectorAll( '.explain_tabs .tab-list' );
-    const pages = explain.querySelectorAll( '.explain_page' );
-    const formExplainerLinks = explain.querySelectorAll(
-      '.form-explainer_page-link'
-    );
-
-    return assign( this.elements,
-      { explain,
-        explainPageBtns,
-        explainPagination,
-        explainTabs,
-        formExplainerLinks,
-        initialTab,
-        pages,
-        tabLink,
-        tabList
-      }
-    );
-  }
-
-  /**
-   * Return explainer page element based on page number.
-   * @param {number} pageNum - Number of explainer page.
-   * @returns {Object} Page DOM element.
-   */
-  getPageEl( pageNum ) {
-    return DT.getEl( `#explain_page-${ pageNum }` );
-  }
-  
-
-
-  /**
-   * Limit .image-map_image to the height of the window and then adjust the two
-   * columns to match.
-   * @param {HTMLNodes} elements - Current page DOM elements.
-   * @param {number} pageNum - Current page number.
-  */
-  fitToWindow( elements, pageNum ) {
-    // show the first page
-    
-  }
-  
-
-  /**
    * Paginate through the various form pages.
    * @param {string} direction - 'next' or 'prev'.
    */
@@ -267,47 +271,7 @@ class FormExplainer {
       this.switchPage( currentPage, newPage );
     }
   }
-
-  /**
-   * Paginate through the various form pages.
-   * @param {number} pageNum - Number of the current page.
-   * @param {function} callback - Function to invode after scroll.
-   * @param {boolean} shouldScrollIntoView - Whether to scroll the page into view.
-   */
-  setCurrentPage( pageNum, callback, shouldScrollIntoView = true ) {
-    const CURRENT_PAGE = 'current-page';
-    const PAGE_LINK = '.form-explainer_page-link';
-    const PAGINATION = '.explain_pagination';
-    const CURRENT_PAGE_LINK =
-      '.form-explainer_page-link[data-page="' + pageNum + '"]';
-
-    this.currentPage = parseInt( pageNum, 10 );
-    this.elements.currentPage = this.getPageEl( pageNum );
-    assign( this.elements, this.getPageElements( pageNum ) );
-
-    DT.removeClass( PAGE_LINK, CURRENT_PAGE );
-    DT.addClass( CURRENT_PAGE_LINK, CURRENT_PAGE );
-    this.updatePaginationUI();
-
-    if ( shouldScrollIntoView ) {
-      scrollIntoView(
-        DT.getEl( PAGINATION ),
-        { duration: 200,
-          callback: callback || NO_OP
-        }
-      );
-    }
-  }
-
-  /**
-   * Paginate through the various form pages.
-   * @param {number} pageCount - Number of pages.
-   */
-  setPageCount( pageCount ) {
-    const pages = DT.getEls( '.explain_page' );
-    this.pageCount = pages.length;
-  }
-
+  
   /**
    * Switch pages by fading pages in / out and
    * updating the UI accordingly.
@@ -320,11 +284,9 @@ class FormExplainer {
       DT.fadeOut( this.getPageEl( currentPage ), 600,
         () => {
           DT.fadeIn( this.getPageEl( newPage ), 700 );
-          this.updateImageUI( newPage );
         } );
     } );
   }
-
 
   /* Initialize the DOM events for the entire explainer UI. */
   initializeEvents() {
