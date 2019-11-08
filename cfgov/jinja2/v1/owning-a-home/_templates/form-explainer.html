@@ -53,11 +53,13 @@
               <div class="image-map_wrapper" style="position: sticky; top:0; ">
                 {% if page_count > 1 %}
                   <div class="form-explainer_page-buttons">
-                      <button class="prev a-btn a-btn__disabled">
+                      <button class="prev a-btn a-btn__disabled"
+                              data-direction="prev">
                           <span class="u-visually-hidden">Previous page</span>
                           {{ svg_icon('left') }}
                       </button>
-                      <button class="a-btn next">
+                      <button class="a-btn next"
+                              data-direction="next">
                           <span class="u-visually-hidden">Next page</span>
                           {{ svg_icon('right') }}
                       </button>
@@ -65,7 +67,7 @@
                   {% endif %}
                   <img class="image-map_image"
                        src="{{ page.img }}"
-                       style="height:95vh"
+                       style="height:95vh;max-height:100%;"
                        alt="">
                   {{ render_map_points( page.terms, loop.index ) }}
               </div>
@@ -102,6 +104,12 @@
 
 {% macro render_map_points( terms, page_num ) %}
 {% for item in terms %}
+{% set left = item.left[:-1] | float %}
+{% set val = left - 5 if left - 5 > 0 else 0 %}
+<!-- <span class = "image-map_overlay__{{ item.category }}" style="color: white !important; position:absolute;background-color: black !important;border-radius: 50%;padding:6px;width:1.25em;text-align:center;height:1.25em;font-size:1em;line-height:1.25em;
+             {{ 'top:' + item.top + ';' 'left:' + val | string + '%;' }}">
+  {{loop.index}}
+</span> -->
 <a class="image-map_overlay image-map_overlay__{{ item.category }}"
    style="{{ 'top:' + item.top + ';' 'left:' + item.left + ';' }}
           {{ 'width:' + item.width + ';' 'height:' + item.height + ';'
@@ -190,12 +198,14 @@
     </button>
     <div class="o-expandable_content" tabindex="0">
         {{ item.definition | safe }}
-        <p>hi</p>
-        <p>hi</p>
-        <p>hi</p>
-        <p>hi</p>
-        <p>hi</p>
-        <p>hi</p>
+        <p>content</p>
+        <p>content</p>
+        <p>content</p>
+        <p>content</p>
+        <p>content</p>
+        <p>content</p>
+        <p>content</p>
+
 
         {% if item.highlight -%}
             <img src="{{ item.highlight }}" alt="">

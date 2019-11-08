@@ -175,18 +175,20 @@
         </li>
     </ul>
 
-
-    {{ render_pagination( value.pages ) }}
+    {% set page_count = value.pages | length %}
+    {% if page_count > 1 %}
+      {{ render_pagination( value.pages ) }}
+    {% endif %}
 
     {% for page in value.pages %}
     <figure class="explain_page"
             id="explain_page-{{ loop.index }}"
             role="tablist"
-            aria-multiselectable="true"
-            style="display:table;">
-        <div style="display:table-cell">
-        <div class="image-map explain_image-map" style="position: sticky; top:0">
-            <div class="image-map_wrapper">
+            aria-multiselectable="true">
+        <div style="display:flex">
+        <div class="image-map explain_image-map">
+            <div class="image-map_wrapper" style="position: sticky; top:0">
+                {% if page_count > 1 %}
                 <div class="form-explainer_page-buttons">
                     <button class="prev a-btn a-btn__disabled">
                         <span class="u-visually-hidden">Previous page</span>
@@ -196,24 +198,27 @@
                         <span class="u-visually-hidden">Next page</span>
                         {{ svg_icon('right') }}
                     </button>
-                  </div>
+                </div>
+                {% endif %}
                   {% set media = image(page.image, 'original') %}
                   {% set image_height = media.height | float %}
                   {% set image_width = media.width | float %}
                 <img class="image-map_image"
                      src="{{ media.url }}"
+                     style="height:95vh;max-height:100%;"
                      alt="">
                 {{ render_map_points( page.notes, loop.index, image_height, image_width ) }}
             </div>
         </div>
-      </div>
-        <figcaption class="terms explain_terms" style="display:table-cell">
+        <figcaption class="terms explain_terms" style="flex:1;padding-left:35px;">
             <div class="o-expandable-group
                         o-expandable-group__form-explainer
                         {{ 'o-expandable-group__accordion' if true else '' }}">
                 {{ render_terms( page.notes, loop.index ) }}
             </div>
         </figcaption>
+        </div>
+
     </figure>
     {% endfor %}
 </div>

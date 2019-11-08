@@ -36,7 +36,6 @@ class FormExplainer {
   constructor( element, options = {} ) {
     this.currentPage = options.currentPage || 1;
     this.elements = {};
-    this.elements.base = element;
   }
 
   /**
@@ -76,7 +75,6 @@ class FormExplainer {
       '.form-explainer_page-link[data-page="' + pageNum + '"]';
 
     this.currentPage = parseInt( pageNum, 10 );
-    this.elements.currentPage = this.getPageEl( pageNum );
 
     DT.removeClass( PAGE_LINK, CURRENT_PAGE );
     DT.addClass( CURRENT_PAGE_LINK, CURRENT_PAGE );
@@ -98,16 +96,19 @@ class FormExplainer {
    */
   setUIElements() {
     const explain = DT.getEl( '.explain' );
+
     const explainTabs = explain.querySelector( '.explain_tabs' );
-    const explainPagination = explain.querySelector( '.explain_pagination' );
-    const explainPageBtns = explain.querySelectorAll(
-      '.form-explainer_page-buttons button'
-    );
     const tabLink = explain.querySelector(
       '.tab-link[data-target="' + EXPLAIN_TYPES.CHECKLIST + '"]'
     );
     const initialTab = closest( tabLink, '.tab-list' );
     const tabList = explain.querySelectorAll( '.explain_tabs .tab-list' );
+
+    const explainPagination = explain.querySelector( '.explain_pagination' );
+    const explainPageBtns = explain.querySelectorAll(
+      '.form-explainer_page-buttons button'
+    );
+    
     const pages = explain.querySelectorAll( '.explain_page' );
     const formExplainerLinks = explain.querySelectorAll(
       '.form-explainer_page-link'
