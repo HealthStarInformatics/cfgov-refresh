@@ -193,10 +193,17 @@
                 .grid_column(12);
             }
 
-      
+            &_image-map {
+                .grid_column(8);
+            }
+
+            &_terms {
+                .grid_column(4);
+                border-left-width: @grid_gutter-width;
+            }
 
             &_pagination {
-                .grid_column(12);
+                .grid_column(8);
             }
         } );
     }
@@ -248,6 +255,15 @@
             position: relative;
         } );
 
+        &__fixed {
+            position: fixed;
+            top: 30px;
+        }
+
+        &__absolute {
+            position: absolute;
+            bottom: 30px;
+        }
     }
 
     .explain_pagination {

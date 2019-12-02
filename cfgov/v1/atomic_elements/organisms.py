@@ -1280,21 +1280,20 @@ class ExplainerNote(blocks.StructBlock):
     coordinates = Coordinates(form_classname='coordinates', label='Note coordinates')
     heading = blocks.CharBlock(required=True, label='Note heading')
     body =  blocks.RichTextBlock(required=True, label='Note text')
-    category = blocks.ChoiceBlock(
-        required=True,
-        choices=[
-            ('checklist', 'checklist'),
-            ('definitions', 'definitions'),
-        ],
-        default="checklist",
-        label='Note category'
+
+
+class ExplainerCategory(blocks.StructBlock):
+    title = blocks.CharBlock(
+        required=False,
+        label='Category title',
+        help_text='Optional'
     )
-    
+    notes = blocks.ListBlock(ExplainerNote(required=False))
 
 
 class ExplainerPage(blocks.StructBlock):
     image = images_blocks.ImageChooserBlock(required=True, icon='image')
-    notes = blocks.ListBlock(ExplainerNote(required=False))
+    categories = blocks.ListBlock(ExplainerCategory(required=False))
 
 
 class Explainer(blocks.StructBlock):

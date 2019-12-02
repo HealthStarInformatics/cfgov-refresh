@@ -6,10 +6,6 @@ import DT from './dom-tools';
 import { assign } from '../../../../js/modules/util/assign';
 import { closest } from '../../../../js/modules/util/dom-traverse';
 
-const EXPLAIN_TYPES = {
-  CHECKLIST:   'checklist',
-  DEFINITIONS: 'definitions'
-};
 
 const CSS = {
   HAS_ATTENTION:         'has-attention',
@@ -97,13 +93,6 @@ class FormExplainer {
   setUIElements() {
     const explain = DT.getEl( '.explain' );
 
-    const explainTabs = explain.querySelector( '.explain_tabs' );
-    const tabLink = explain.querySelector(
-      '.tab-link[data-target="' + EXPLAIN_TYPES.CHECKLIST + '"]'
-    );
-    const initialTab = closest( tabLink, '.tab-list' );
-    const tabList = explain.querySelectorAll( '.explain_tabs .tab-list' );
-
     const explainPagination = explain.querySelector( '.explain_pagination' );
     const explainPageBtns = explain.querySelectorAll(
       '.form-explainer_page-buttons button'
@@ -118,12 +107,8 @@ class FormExplainer {
       { explain,
         explainPageBtns,
         explainPagination,
-        explainTabs,
         formExplainerLinks,
-        initialTab,
         pages,
-        tabLink,
-        tabList
       }
     );
   }
@@ -144,8 +129,6 @@ class FormExplainer {
         }
       }
     );
-
-    this.updatePageUI( elements.initialTab, EXPLAIN_TYPES.CHECKLIST );
 
     // TODO: Can we dispatch an event and init the expandables outside this?
     // eslint-disable-next-line global-require
@@ -179,30 +162,7 @@ class FormExplainer {
     }
   }
 
-  /**
-   * Update the page UI for the give explainer type.
-   * @param {string} currentTab - Name of current tab.
-   * @param {string} explainerType - Type of form explainer.
-   */
-  updatePageUI( currentTab, explainerType ) {
-    this.updateTabsUI( currentTab );
-
-    DT.hide( '.o-expandable__form-explainer' );
-    DT.show( '.o-expandable__form-explainer-' + explainerType );
-    DT.hide( '.image-map_overlay' );
-    DT.show( '.image-map_overlay__' + explainerType );
-  }
-
-  /**
-   * Update the tabs UI.
-   * @param {string} currentTab - Name of current tab.
-   */
-  updateTabsUI( currentTab ) {
-
-    // Update the tab state
-    DT.removeClass( '.explain_tabs .tab-list', 'active-tab' );
-    DT.addClass( currentTab, 'active-tab' );
-  }
+ 
 
   /* Update attention classes based on the expandable or image overlay
    that was targeted.
@@ -320,24 +280,6 @@ class FormExplainer {
       }
     } );
 
-    /* When the tab list is clicked,
-     * scroll it into view and update the page UI.
-     */
-    DT.bindEvents( uiElements.tabList, 'click', event => {
-      const selectedTab = event.currentTarget;
-      const explainerType = selectedTab.querySelector( '[data-target]' )
-        .getAttribute( 'data-target' );
-      this.updatePageUI( selectedTab, explainerType );
-      // NOTE: Do we need to scroll here?
-      scrollTo(
-        uiElements.tabList[0].getBoundingClientRect().top +
-        window.pageYOffset,
-        {
-          duration: 300,
-          offset: -30
-        }
-      );
-    } );
 
     /* When the mouse is over the image overlay or form explainer,
      * update the hover styles.

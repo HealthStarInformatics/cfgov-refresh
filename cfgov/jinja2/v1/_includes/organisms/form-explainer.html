@@ -15,15 +15,17 @@
 
    ========================================================================== #}
 
-{% macro render_map_points( terms, page_num, image_height, image_width ) %}
-{% for item in terms %}
-  {% set id = 'page-' + page_num | string + '-' + 'note-'  + loop.index | string %}
+{% macro render_map_points( categories, page_num, image_height, image_width ) %}
+{% for category in categories %}
+{% set ext = loop.index %}
+{% for item in category.notes %}
+  {% set id = 'page-' + page_num | string + '-category-' + ext | string + '-note-'  + loop.index | string %}
   {% set top = ( item.coordinates.top | float / image_height ) * 100 %}
   {% set left = ( item.coordinates.left | float / image_width ) * 100 %}
   {% set width = ( item.coordinates.width | float / image_width ) * 100 %}
   {% set height = ( item.coordinates.height | float / image_height ) * 100 %}
 
-  <a class="image-map_overlay image-map_overlay__{{ item.category }}"
+  <a class="image-map_overlay image-map_overlay__{{ ext }}"
      style="{{ 'top:' + top | string + '%;' 'left:' + left | string + '%;' }}
             {{ 'width:' + width | string + '%;' 'height:' + height | string + '%;'
             if item.coordinates.width and item.coordinates.height }}"
@@ -33,12 +35,13 @@
       <span class="u-visually-hidden">{{ item.heading }}</span>
    </a>
 {% endfor %}
+{% endfor %}
 {% endmacro %}
 
 
 {# ==========================================================================
 
-   render_terms( terms, page_num )
+   render_terms( terms, page_num, category )
 
    ==========================================================================
 
@@ -52,9 +55,9 @@
 
    ========================================================================== #}
 
-{% macro render_terms( terms, page_num ) %}
+{% macro render_terms( terms, page_num, category ) %}
 {% for item in terms %}
-    {{ render_term( item, loop.index, page_num ) }}
+    {{ render_term( item, loop.index, page_num, category ) }}
 {% endfor %}
 {% endmacro %}
 
@@ -84,17 +87,17 @@
 
    ========================================================================== #}
 
-{% macro render_term( item, index, page_num ) %}
+{% macro render_term( item, index, page_num, category ) %}
 <div class="o-expandable
             o-expandable__padded
             o-expandable__form-explainer
-            o-expandable__form-explainer-{{ item.category }}"
-     id="{{ 'page-' + page_num|string + '-' + 'note-' + index | string }}">
+            o-expandable__form-explainer-{{ category }}"
+     id="{{ 'page-' + page_num | string + '-category-' + category | string + '-note-' + index | string }}">
     <button class="o-expandable_header o-expandable_target"
             tabindex="0">
         <span class="h4 o-expandable_header-left o-expandable_label">
             {{ svg_icon(
-              'check-round' if item.category == 'checklist' else 'question-round'
+              'check-round' if true else 'question-round'
             ) }}
             {{ item.heading }}
         </span>
@@ -156,24 +159,6 @@
 <div class="form-explainer">
 
 <div class="explain" aria-controls="form-explainer">
-    <ul class="tabs explain_tabs">
-        <li class="tab-list active-tab">
-            <button class="tab-link tab-link__checklist"
-                    data-target="checklist"
-                    tabindex="0">
-                {{ svg_icon('check-round') }}
-                <span class="tab-label">Check details</span>
-            </button>
-        </li>
-        <li class="tab-list">
-            <button class="tab-link tab-link__definitions"
-                    data-target="definitions"
-                    tabindex="0">
-                {{ svg_icon('help-round') }}
-                <span class="tab-label">Get definitions</span>
-            </button>
-        </li>
-    </ul>
 
     {% set page_count = value.pages | length %}
     {% if page_count > 1 %}
@@ -181,6 +166,7 @@
     {% endif %}
 
     {% for page in value.pages %}
+    {% set page_num = loop.index %}
     <figure class="explain_page"
             id="explain_page-{{ loop.index }}"
             role="tablist"
@@ -203,18 +189,25 @@
                   {% set media = image(page.image, 'original') %}
                   {% set image_height = media.height | float %}
                   {% set image_width = media.width | float %}
+                  {% set ar = media.width | int / media.height | int %}
+                  {% set w = ar * 100 %}
                 <img class="image-map_image"
                      src="{{ media.url }}"
-                     style="height:95vh;max-height:100%;"
+                     style="margin-right:2px;height:95vh;max-height:{{media.height | string + 'px'}};width:calc({{ar}} * 95vh); max-width:{{media.width | string + 'px'}}; "
                      alt="">
-                {{ render_map_points( page.notes, loop.index, image_height, image_width ) }}
+                {{ render_map_points( page.categories, page_num, image_height, image_width ) }}
             </div>
         </div>
         <figcaption class="terms explain_terms" style="flex:1;padding-left:35px;">
             <div class="o-expandable-group
                         o-expandable-group__form-explainer
-                        {{ 'o-expandable-group__accordion' if true else '' }}">
-                {{ render_terms( page.notes, loop.index ) }}
+                        o-expandable-group__accordion">
+                {% for category in page.categories %}
+                  {% if category.title %}
+                     <h3>{{ category.title }}</h3>
+                  {% endif %}
+                  {{ render_terms( category.notes, page_num, loop.index ) }}
+                {% endfor %}
             </div>
         </figcaption>
         </div>

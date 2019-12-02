@@ -49,7 +49,7 @@
         transition: border 100ms ease-out;
     }
 
-    .image-map_overlay__checklist {
+    .image-map_overlay__1 {
         & {
             background: rgba( 255, 147, 27, 0.2 );
         }
@@ -71,7 +71,7 @@
         }
     }
 
-    .image-map_overlay__definitions {
+    .image-map_overlay__2 {
         & {
             background: rgba( 0, 94, 93, 0.2 );
         }
@@ -94,6 +94,7 @@
     }
 
     // Expandable overrides
+
 
     .o-expandable-group .o-expandable {
         border: 4px solid transparent;
@@ -121,7 +122,7 @@
             font-size: unit( 16 / @base-font-size-px, em );
         }
 
-        &.o-expandable__form-explainer-checklist {
+        &.o-expandable__form-explainer-1 {
             background-color: @gold-20;
 
             &.has-attention,
@@ -145,7 +146,7 @@
         }
 
 
-        &.o-expandable__form-explainer-definitions {
+        &.o-expandable__form-explainer-2 {
             background-color: @teal-20;
 
             &.has-attention,
@@ -166,6 +167,10 @@
             .o-expandable_label .cf-icon-svg {
                 color: @teal-80;
             }
+        }
+
+        + h3 {
+            margin-top: @grid_gutter-width;
         }
     }
 
@@ -199,46 +204,6 @@
             &_pagination {
             }
         } );
-    }
-
-    .explain_tabs {
-        margin: 0 0 unit( @grid_gutter-width / @base-font-size-px, em );
-        .tab-list button,
-        .tab-list a {
-            &.tab-link__checklist {
-                border-top-color: @gold-20;
-                .cf-icon {
-                    color: @gold-60;
-                }
-            }
-
-            &.tab-link__definitions {
-                border-top-color: @teal-20;
-                .cf-icon {
-                    color: @teal-60;
-                }
-            }
-        }
-        .active-tab button,
-        .active-tab a,
-        button:hover,
-        a:hover,
-        button:focus,
-        a:focus {
-            &.tab-link__checklist {
-                border-top-color: @gold-80;
-                .cf-icon {
-                    color: @gold-80;
-                }
-            }
-
-            &.tab-link__definitions {
-                border-top-color: @teal;
-                .cf-icon {
-                    color: @teal;
-                }
-            }
-        }
     }
 
     .explain_page {
